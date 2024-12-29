@@ -6,7 +6,7 @@ export default async function Header() {
   return (
     <div className="bg-slate-50">
       <div className="flex container py-2 mx-auto justify-between items-center">
-        <h1 className="font-mono">BATCH-11 LMS</h1>
+        <h1 className="font-mono">LMS</h1>
 
         {session ? (
           <div className="flex gap-2 items-center">
