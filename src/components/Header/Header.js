@@ -3,6 +3,7 @@ import { auth, signOut } from "../../../auth";
 
 export default async function Header() {
   const session = await auth();
+  console.log("session in header=>",session);
   return (
     <div className="bg-slate-50">
       <div className="flex container py-2 mx-auto justify-between items-center">

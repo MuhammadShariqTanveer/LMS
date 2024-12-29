@@ -1,8 +1,11 @@
 import { connectDB } from "@/lib/dbConnect";
-import { UserModal } from "@/lib/modals/UserModal"
-import { connect } from "mongoose"
-import NextAuth from "next-auth"
-import Google from "next-auth/providers/google"
+import { UserModal } from "@/lib/modals/UserModal";
+import { connect } from "mongoose";
+import NextAuth from "next-auth";
+import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
+
+
 
 const handleLoginUser = async (profile)=>{
   await connectDB()
@@ -22,7 +25,18 @@ const handleLoginUser = async (profile)=>{
   }
 };
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [Google],
+  providers: [Google,
+    Credentials({
+    credentials: {
+      username: { label: "Username" },
+      password: { label: "Password", type: "password" },
+    },
+    async authorize({ request }) {
+      const response = await fetch(request)
+      if (!response.ok) return null
+      return (await response.json()) ?? null
+    },
+  }),],
   callbacks: {
     async signIn({ account, profile }) {
         console.log("account=>",account);
@@ -30,15 +44,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const user = await handleLoginUser(profile);
       return {...profile, role : user.role} // Do different verification for other providers that don't have `email_verified`
     },
-    jwt({ token, user }) {
-      if (user) { // User is available during sign-in
-        token.id = user.id
-      }
-      return token
-    },
+    async jwt({ token}) {
+      console.log("token=>",token);
+      const user = await handleLoginUser(token);
+      console.log("user in the JWT=>",user);
+       token.role = user.role;
+       token._id = user._id;
+       return token;
+      },
+     
+   
     session({ session, token }) {
-      session.user.id = token.id
-      return session
+      session.user._id = token._id;
+      session.user.role = token.role;
+      return session;
     },
   },
 });
