@@ -27,22 +27,37 @@ const handleLoginUser = async (profile)=>{
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Google,
     Credentials({
-    credentials: {
-      username: { label: "Username" },
-      password: { label: "Password", type: "password" },
-    },
-    async authorize({ request }) {
-      const response = await fetch(request)
-      if (!response.ok) return null
-      return (await response.json()) ?? null
-    },
+      credentials: {
+        email: {},
+        password: {},
+      },
+      authorize: async (credentials) => {
+        let user = null
+        console.log("credentials=>",credentials);
+
+        let lres = await fetch('https://lms-eight-dun.vercel.app/api/user/login',
+        {
+          method: "POST",
+          body: JSON.stringify({
+            email: credentials.email,
+            password: credentials.password,
+          })
+      }
+    );
+        res = await res.json();
+        console.log("res=>",res)
+        return {email : "abc@test.com"};
+      },
   }),],
   callbacks: {
     async signIn({ account, profile }) {
         console.log("account=>",account);
-        console.log("profile=>",profile);
-        const user = await handleLoginUser(profile);
-      return {...profile, role : user.role} // Do different verification for other providers that don't have `email_verified`
+        if(account.provider== 'google'){
+          console.log("profile=>",profile);
+          const user = await handleLoginUser(profile);
+        return {...profile, role : user.role} // Do different verification for other providers that don't have `email_verified`
+        }
+          return true;
     },
     async jwt({ token}) {
       console.log("token=>",token);
