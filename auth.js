@@ -5,8 +5,6 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 
-
-
 const handleLoginUser = async (profile)=>{
   await connectDB()
   const user = await UserModal.findOne({email : profile.email});
@@ -25,7 +23,8 @@ const handleLoginUser = async (profile)=>{
   }
 };
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [Google,
+  providers: [
+    Google,
     Credentials({
       credentials: {
         email: {},
@@ -35,7 +34,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         let user = null
         console.log("credentials=>",credentials);
 
-        let lres = await fetch('https://lms-eight-dun.vercel.app/api/user/login',
+        let res = await fetch
+        ('https://lms-eight-dun.vercel.app/api/user/login',
         {
           method: "POST",
           body: JSON.stringify({
@@ -44,9 +44,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           })
       }
     );
-        res = await res.json();
-        console.log("res=>",res)
-        return {email : "abc@test.com"};
+    res = await res.json();
+    user = res.user;
+    return user;
       },
   }),],
   callbacks: {
