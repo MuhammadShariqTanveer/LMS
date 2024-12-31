@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export async function POST(request){
+    
     await connectDB();
     const obj = await request.json();
      
@@ -34,7 +35,7 @@ export async function POST(request){
     });
 }
 
-export async function POST(){
+export async function GET(){
     return Response.json("User Get Request");
 
 }

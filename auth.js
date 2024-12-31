@@ -35,7 +35,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         console.log("credentials=>", credentials);
 
         let res = await fetch(
-          `https://lms-xi-lake.vercel.app/api/user/login/`,
+          `https://lms-xi-lake.vercel.app/api/user/login`,
           {
             method: "POST",
             body: JSON.stringify({
@@ -45,11 +45,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
         );
         res = await res.json();
-       console.log(res);
-        {
+        console.log("response after login=>", res);
         user = res.user;
         return user;
-        }
       },
     }),
   ],
