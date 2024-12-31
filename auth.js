@@ -35,7 +35,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         console.log("credentials=>", credentials);
 
         let res = await fetch(
-          `http://localhost:3000/api/user/login` ,
+          `https://lms-xi-lake.vercel.app/api/user/login`,
           {
             method: "POST",
             body: JSON.stringify({

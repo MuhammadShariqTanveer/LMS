@@ -17,7 +17,7 @@ export async function POST(request){
      }
      );
 
-     const isPasswordMatch= await bcrypt.compare(obj.password, user.password)
+     const isPasswordMatch= await bcrypt.compare(obj.password, user.password);
      if(!isPasswordMatch)
         return Response.json(
         {error: true , msg: "Password Is Not Valid" },
