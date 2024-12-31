@@ -45,8 +45,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
         );
         res = await res.json();
+       console.log(res);
+        {
         user = res.user;
         return user;
+        }
       },
     }),
   ],

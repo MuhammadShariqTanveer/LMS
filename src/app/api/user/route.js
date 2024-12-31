@@ -34,7 +34,7 @@ export async function POST(request){
     });
 }
 
-export async function GET(){
+export async function POST(){
     return Response.json("User Get Request");
 
 }
