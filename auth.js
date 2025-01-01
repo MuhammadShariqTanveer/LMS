@@ -33,7 +33,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorize: async (credentials) => {
         try {
           const res = await fetch(`https://lms-xi-lake.vercel.app/api/user/login`, {
-            method: "POST",
+            method: "GET",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               email: credentials.email,
