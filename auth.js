@@ -58,21 +58,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     
   ],
   callbacks: {
-    async signIn({ account, profile }) {
-      console.log("account=>", account);
-      if (account.provider == "google") {
-        console.log("profile=>", profile);
-        const user = await handleLoginUser(profile);
+    // async signIn({ account, profile }) {
+    //   console.log("account=>", account);
+    //   if (account.provider == "google") {
+    //     console.log("profile=>", profile);
+    //     const user = await handleLoginUser(profile);
 
-        return { ...profile, role: user.role }; // Do different verification for other providers that don't have `email_verified`
-      }
-      return true;
-    },
-    // async redirect({ url, baseUrl }) {
-    //   // Default redirect logic
-    //   if (url.startsWith(baseUrl)) return url;
-    //   return baseUrl;
+    //     return { ...profile, role: user.role }; // Do different verification for other providers that don't have `email_verified`
+    //   }
+    //   return true;
     // },
+    async redirect({ url, baseUrl }) {
+      // Default redirect logic
+      if (url.startsWith(baseUrl)) return url;
+      return baseUrl;
+    },
     async jwt({ token }) {
       console.log("token=>", token);
       const user = await handleLoginUser(token);
