@@ -1,11 +1,11 @@
-
 import { redirect } from "next/navigation";
+import { redirect } from "next/dist/server/api-utils";
 import { auth, signIn } from "../../../auth";
 
 export default async function SignIn() {
   const session = await auth();
   console.log("session=>", session);
-  if (session) redirect("/");
+  if (session) redirect("");
   return (
     <div className="container min-h-screen mx-auto flex flex-col gap-4 justify-center items-center">
       <form
