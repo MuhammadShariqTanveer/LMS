@@ -27,35 +27,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google,
     Credentials({
       credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
+        email: {},
+        password: {},
       },
       authorize: async (credentials) => {
-        try {
-          const res = await fetch(`https://lms-xi-lake.vercel.app/api/user/login`, {
+        let user = null;
+        console.log("credentials=>", credentials);
+
+        let res = await fetch(
+          `https://lms-xi-lake.vercel.app/api/user/login`,
+          {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               email: credentials.email,
               password: credentials.password,
             }),
-          });
-    
-          const data = await res.json();
-          if (res.ok && data.user) {
-            return {
-              ...data.user,
-              token: data.token,
-            };
           }
-          throw new Error(data.msg || "Invalid credentials");
-        } catch (error) {
-          console.error("Error in credentials authorize:", error);
-          return null;
-        }
+        );
+        res = await res.json();
+        user = res.user;
+        return user;
       },
     }),
-    
   ],
   callbacks: {
     async signIn({ account, profile }) {
@@ -68,11 +61,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return true;
     },
-    // async redirect({ url, baseUrl }) {
-    //   // Default redirect logic
-    //   if (url.startsWith(baseUrl)) return url;
-    //   return baseUrl;
-    // },
     async jwt({ token }) {
       console.log("token=>", token);
       const user = await handleLoginUser(token);
