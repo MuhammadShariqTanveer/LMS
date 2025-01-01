@@ -1,19 +1,23 @@
-// import { redirect } from "next/navigation";
-import { redirect } from "next/dist/server/api-utils";
-import { auth, signIn } from "../../../auth";
+import { redirect } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default async function SignIn() {
   const session = await auth();
-  console.log("session=>", session);
   if (session) redirect("/");
 
   return (
     <div className="container min-h-screen mx-auto flex flex-col gap-4 justify-center items-center">
       <form
         className="flex flex-col gap-3 shadow p-3"
-        action={async (formData) => {
-          "use server";
-          await signIn("credentials", formData, { redirect: false });
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+          const result = await signIn("credentials", {
+            email: formData.get("email"),
+            password: formData.get("password"),
+            redirect: false,
+          });
+          if (result.ok) redirect("/");
         }}
       >
         <input
@@ -26,6 +30,7 @@ export default async function SignIn() {
           className="border p-2"
           required
           name="password"
+          type="password"
           placeholder="Enter your Password"
         />
         <button className="border p-1 px-2" type="submit">
@@ -33,16 +38,12 @@ export default async function SignIn() {
         </button>
       </form>
 
-      <form
-        action={async () => {
-          "use server";
-          await signIn("google");
-        }}
+      <button
+        className="border p-3 px-5"
+        onClick={() => signIn("google")}
       >
-        <button className="border p-3 px-5" type="submit">
-          Continue with Google
-        </button>
-      </form>
+        Continue with Google
+      </button>
     </div>
   );
 }
