@@ -1,6 +1,6 @@
-
 import { redirect } from "next/navigation";
 import { auth, signIn } from "../../../auth";
+
 
 export default async function SignIn() {
   const session = await auth();
@@ -12,7 +12,8 @@ export default async function SignIn() {
         className="flex flex-col gap-3 shadow p-3"
         action={async (formData) => {
           "use server";
-          await signIn("credentials", formData, { redirect: false });
+          console.log("Form Data:", formData);
+           await  signIn("credentials", formData, { redirect: false });
         }}
       >
         <input
