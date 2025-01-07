@@ -1,23 +1,19 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useState } from "react" 
+import * as React from "react";
+import { useState } from "react";
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+} from "@tanstack/react-table";
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -26,8 +22,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -35,34 +31,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import react from "react"
-
-const data = [
-  {
-    id: "m5gr84i9",
-    course: "Web & App Development",
-    status: "active",
-    duration: "1 Year",
-    discription: "Make student Complete Web and App Developer From Scratch"
-  },
-  {
-    id: "3u1reuv4",
-    course: "App Development",
-    status: "active",
-    duration: "4 months",
-    discription: "Make student Complete App Developer From Scratch"
-  },
-  {
-    id: "derv1ws0",
-    course: "Python Development",
-    status: "active",
-    duration: "4 months",
-    discription: "Learn Python From Scratch"
-  },
-
-]
-
+} from "@/components/ui/table";
+import Image from "next/image";
 
 export const columns = [
   {
@@ -88,14 +58,24 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "thumbnail",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Thumbnail
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <Image src={row.getValue("thumbnail")} height={50} width={80} />
     ),
   },
   {
-    accessorKey: "course",
+    accessorKey: "title",
     header: ({ column }) => {
       return (
         <Button
@@ -103,36 +83,42 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Course
-          <ArrowUpDown />
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
-    cell: ({ row }) => <div>{row.getValue("course")}</div>,
+    cell: ({ row }) => <div>{row.getValue("title")}</div>,
   },
   {
-    accessorKey: "discription",
+    accessorKey: "description",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Discription
-          <ArrowUpDown />
+          Description
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
-    cell: ({ row }) => <div>{row.getValue("discription")}</div>,
+    cell: ({ row }) => <div>{row.getValue("description")}</div>,
   },
   {
     accessorKey: "duration",
     header: () => <div className="text-right">Duration</div>,
     cell: ({ row }) => {
-      const amount = (row.getValue("duration"))
-      return <div className="text-right font-medium">{amount}</div>
+      const amount = row.getValue("duration");
+      return <div className="text-right font-medium">{amount}</div>;
     },
   },
- 
+  {
+    accessorKey: "eligibility",
+    header: () => <div className="text-right">Eligibility</div>,
+    cell: ({ row }) => {
+      return <div>{row.getValue("eligibility").join(" , ")}</div>;
+    },
+  },
   {
     id: "actions",
     enableHiding: false,
@@ -144,7 +130,7 @@ export const columns = [
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
+              <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -159,19 +145,19 @@ export const columns = [
             <DropdownMenuItem>Change Status</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];
 
-export function CourseTable() {
-  const [sorting, setSorting] = useState([])
-  const [columnFilters, setColumnFilters] = useState([])
-  const [columnVisibility, setColumnVisibility] =useState({})
-  const [rowSelection, setRowSelection] = useState({})
+export function CourseTable({ courses }) {
+  const [sorting, setSorting] = useState([]);
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [columnVisibility, setColumnVisibility] = useState({});
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
-    data,
+    data: courses,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -187,23 +173,23 @@ export function CourseTable() {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter course..."
-          value={(table.getColumn("course")?.getFilterValue() ) ?? ""}
+          value={table.getColumn("title")?.getFilterValue() ?? ""}
           onChange={(event) =>
-            table.getColumn("course")?.setFilterValue(event.target.value)
+            table.getColumn("title")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
+              Columns <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -222,7 +208,7 @@ export function CourseTable() {
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
-                )
+                );
               })}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -242,7 +228,7 @@ export function CourseTable() {
                             header.getContext()
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -302,5 +288,5 @@ export function CourseTable() {
         </div>
       </div>
     </div>
-  )
+  );
 }

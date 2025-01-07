@@ -1,10 +1,9 @@
-"use client"
+"use client";
+import * as React from "react";
 
-import * as React from "react"
-
-import { cn } from "@/lib/utils"
-// import { useMediaQuery } from "@/hooks/use-media-query"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+// import { useMediaQuery } from "@/hooks/use-media-query";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Drawer,
   DrawerClose,
@@ -22,20 +21,20 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
-  
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { addCourse } from "@/actions/courses";
 
 export function CourseDialog() {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
   const isDesktop = true;
 
   if (isDesktop) {
@@ -48,12 +47,13 @@ export function CourseDialog() {
           <DialogHeader>
             <DialogTitle>Add Course</DialogTitle>
             {/* <DialogDescription>
+
             </DialogDescription> */}
           </DialogHeader>
           <CourseForm />
         </DialogContent>
       </Dialog>
-    )
+    );
   }
 
   return (
@@ -64,9 +64,7 @@ export function CourseDialog() {
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>Add Course</DrawerTitle>
-          <DrawerDescription>
-            You can add course here.
-          </DrawerDescription>
+          <DrawerDescription>You can add course here.</DrawerDescription>
         </DrawerHeader>
         <CourseForm className="px-4" />
         <DrawerFooter className="pt-2">
@@ -76,37 +74,37 @@ export function CourseDialog() {
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  )
+  );
 }
 
 function CourseForm({ className }) {
   return (
-    <form className={cn("grid items-start gap-4", className)}>
+    <form
+      action={addCourse}
+      className={cn("grid items-start gap-4", className)}
+    >
       <div className="grid gap-2">
-        <Label htmlFor="course">Course</Label>
-        <Input required type="text" id="course" defaultValue="" />
+        <Label htmlFor="course">Course Title</Label>
+        <Input required type="text" id="course" name={"title"} />
       </div>
       <div className="grid gap-2">
         <Label htmlFor="duration">Duration</Label>
-        <Input required id="duration" defaultValue="" />
+        <Input required id="duration" name={"duration"} />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="discription">Discription</Label>
-        <Input required id="discription" defaultValue="" />
+        <Label htmlFor="description">Description</Label>
+        <Input required id="description" name={"description"} />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="status">Status</Label>
-        <Select>
-  <SelectTrigger>
-    <SelectValue placeholder="Active- Not-Active" />
-  </SelectTrigger>
-  <SelectContent>
-    <SelectItem value="active">Active</SelectItem>
-    <SelectItem value="not-active">Not-active</SelectItem>
-  </SelectContent>
-</Select>
+        <Label htmlFor="eligibility">Eligibility</Label>
+        <Input required id="eligibility" name={"eligibility"} />
       </div>
+      <div className="grid gap-2">
+        <Label htmlFor="thumbnail">Thumbnail</Label>
+        <Input type={"url"} name={"thumbnail"} required id="thumbnail" />
+      </div>
+
       <Button type="submit">Add Course</Button>
     </form>
-  )
+  );
 }
