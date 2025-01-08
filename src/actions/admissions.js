@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-export async function getAdmissions(status = "") {
+export async function getAdmissions(status = "null") {
   let admissions = await fetch(
     `${process.env.BASE_URL}api/admission?status=${status}`,
     {

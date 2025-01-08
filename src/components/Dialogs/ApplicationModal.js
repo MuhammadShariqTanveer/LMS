@@ -175,3 +175,4 @@ function ApplicationForm({ className, admission, session, setOpen }) {
     </Form>
   );
 }
+
